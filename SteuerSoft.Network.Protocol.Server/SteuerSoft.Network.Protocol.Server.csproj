@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SteuerSoft.Network.Protocol.Server</RootNamespace>
-    <AssemblyName>SteuerSoft.Network.Protocol.Server</AssemblyName>
+    <AssemblyName>wap-server</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

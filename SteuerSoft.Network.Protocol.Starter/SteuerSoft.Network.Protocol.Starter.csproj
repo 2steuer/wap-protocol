@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SteuerSoft.Network.Protocol.Starter</RootNamespace>
-    <AssemblyName>SteuerSoft.Network.Protocol.Starter</AssemblyName>
+    <AssemblyName>wap-start</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
