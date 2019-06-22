@@ -8,26 +8,48 @@ using SteuerSoft.Network.Protocol.Util;
 
 namespace SteuerSoft.Network.Protocol.Message.Base
 {
-    public abstract class WapMessageBase : IWapMessage
+    public abstract class WapMessage : IWapMessage
     {
         public MessageType Type { get; protected set; }
         public string EndPoint { get; protected set; }
+        public ulong SequenceNumber { get; protected set; }
 
-        protected WapMessageBase(MessageType type, string endPoint)
+        protected WapMessage(MessageType type, string endPoint, ulong sequenceNumber)
+            :this(sequenceNumber)
         {
             Type = type;
             EndPoint = endPoint;
         }
 
-        protected WapMessageBase()
+        protected WapMessage(MessageType type, string endPoint)
+            :this()
+        {
+            Type = type;
+            EndPoint = endPoint;
+        }
+
+        protected WapMessage()
+            :this(SequenceNumberProvider.Get())
         {
             
+        }
+
+        protected WapMessage(ulong sequenceNumber)
+        {
+            SequenceNumber = sequenceNumber;
+        }
+
+        internal void SetSequenceNumber(ulong seqNumber)
+        {
+            SequenceNumber = seqNumber;
         }
 
         public byte[] GetBytes()
         {
             List<byte> data = new List<byte>();
             data.Add((byte)Type);
+
+            data.AddRange(BitConverter.GetBytes(SequenceNumber));
 
             var epBytes = Encoding.UTF8.GetBytes(EndPoint);
 

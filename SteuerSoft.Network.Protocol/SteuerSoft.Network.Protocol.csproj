@@ -53,8 +53,9 @@
     <Compile Include="Communication\Base\WapMessageExchangeProvider.cs" />
     <Compile Include="Communication\Base\ValueTypes\ReceiveStates.cs" />
     <Compile Include="Communication\Base\WapProtocol.cs" />
+    <Compile Include="Communication\Material\MethodCall.cs" />
     <Compile Include="ExtensionMethods\TypeExtensions.cs" />
-    <Compile Include="Message\Base\WapMessageBase.cs" />
+    <Compile Include="Message\Base\WapMessage.cs" />
     <Compile Include="Communication\Material\MethodResult.cs" />
     <Compile Include="Message\ReceivedWapMessage.cs" />
     <Compile Include="Message\ValueTypes\MessageType.cs" />
@@ -62,11 +63,14 @@
     <Compile Include="Message\WapMessage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startable\IStartable.cs" />
+    <Compile Include="Util\AsyncDictionary.cs" />
     <Compile Include="Util\EnvironmentVariableHelper.cs" />
     <Compile Include="Util\Logging\Interfaces\ILogger.cs" />
     <Compile Include="Util\Logging\Log.cs" />
     <Compile Include="Util\Logging\ValueTypes\LogLevel.cs" />
     <Compile Include="Util\NumberConverter.cs" />
+    <Compile Include="Util\Pipeline.cs" />
+    <Compile Include="Util\SequenceNumberProvider.cs" />
     <Compile Include="Util\WapEndPoint.cs" />
   </ItemGroup>
   <ItemGroup>

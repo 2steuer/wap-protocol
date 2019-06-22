@@ -10,7 +10,7 @@ using SteuerSoft.Network.Protocol.Util;
 
 namespace SteuerSoft.Network.Protocol.Message
 {
-    public class ReceivedWapMessage : WapMessageBase
+    public class ReceivedWapMessage : WapMessage
     {
         public byte[] Payload { get; }
 
@@ -30,6 +30,14 @@ namespace SteuerSoft.Network.Protocol.Message
 
             Type = t;
 
+            try
+            {
+                SequenceNumber = BitConverter.ToUInt64(data, 1);
+            }
+            catch (Exception e)
+            {
+                throw new FormatException("Could not parse sequence number");
+            }
             
             try
             {
@@ -41,6 +49,7 @@ namespace SteuerSoft.Network.Protocol.Message
                 ushort payloadLength = NumberConverter.ToUInt16(data, 2 + endPointLength);
                 Payload = data
                     .Skip(2) // type byte, endpoint length byte
+                    .Skip(sizeof(ulong))    // Sequence number
                     .Skip(endPointLength) // end point length
                     .Skip(2) // payload length bytes
                     .Take(payloadLength).ToArray();

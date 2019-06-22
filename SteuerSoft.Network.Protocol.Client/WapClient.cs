@@ -16,6 +16,7 @@ using SteuerSoft.Network.Protocol.Communication.Base;
 using SteuerSoft.Network.Protocol.Communication.Material;
 using SteuerSoft.Network.Protocol.ExtensionMethods;
 using SteuerSoft.Network.Protocol.Message;
+using SteuerSoft.Network.Protocol.Message.Base;
 using SteuerSoft.Network.Protocol.Message.Interfaces;
 using SteuerSoft.Network.Protocol.Message.ValueTypes;
 using SteuerSoft.Network.Protocol.Payloads.Control;
@@ -119,13 +120,13 @@ namespace SteuerSoft.Network.Protocol.Client
             return Task.WhenAll(tsks);
         }
 
-        private Task<IWapMessage> MethodCallHandler(ReceivedWapMessage receivedWapMessage)
+        private Task<WapMessage> MethodCallHandler(ReceivedWapMessage receivedWapMessage)
         {
             if (!_methods.HasMethod(receivedWapMessage.EndPoint))
             {
                 var mres = MethodResult<Empty>.FromError("Method not found in this endpoint!");
                 var msg = new WapMessage<MethodResult<Empty>>(MessageType.MethodResponse, receivedWapMessage.EndPoint, mres);
-                return Task.FromResult<IWapMessage>(msg);
+                return Task.FromResult<WapMessage>(msg);
             }
 
             return _methods.CallMethod(WapEndPoint.Parse(receivedWapMessage.EndPoint), receivedWapMessage);

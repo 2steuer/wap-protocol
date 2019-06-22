@@ -5,12 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using SteuerSoft.Network.Protocol.Communication.Base;
 using SteuerSoft.Network.Protocol.Message;
+using SteuerSoft.Network.Protocol.Message.Base;
 using SteuerSoft.Network.Protocol.Message.Interfaces;
 using SteuerSoft.Network.Protocol.Util;
 
 namespace SteuerSoft.Network.Protocol.Server.Material
 {
-    public delegate Task<IWapMessage> MethodCallHandlerDelegate(ClientConnection sender, ReceivedWapMessage msg);
+    public delegate Task<WapMessage> MethodCallHandlerDelegate(ClientConnection sender, ReceivedWapMessage msg);
 
     public delegate Task EventMessageHandlerDelegate(ClientConnection sender, ReceivedWapMessage msg);
 
@@ -40,7 +41,7 @@ namespace SteuerSoft.Network.Protocol.Server.Material
             _eventHandler = eventHandler;
         }
 
-        protected override Task<IWapMessage> HandleMethodCall(ReceivedWapMessage msg)
+        protected override Task<WapMessage> HandleMethodCall(ReceivedWapMessage msg)
         {
             return _methodHandler?.Invoke(this, msg);
         }

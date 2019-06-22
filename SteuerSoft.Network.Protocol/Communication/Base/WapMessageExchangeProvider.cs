@@ -9,6 +9,7 @@ using SteuerSoft.Network.Protocol.Communication.Base.ValueTypes;
 using SteuerSoft.Network.Protocol.Message;
 using SteuerSoft.Network.Protocol.Message.Base;
 using SteuerSoft.Network.Protocol.Message.Interfaces;
+using SteuerSoft.Network.Protocol.Util;
 
 namespace SteuerSoft.Network.Protocol.Communication.Base
 {
@@ -34,6 +35,7 @@ namespace SteuerSoft.Network.Protocol.Communication.Base
         private CancellationTokenSource _stopToken = new CancellationTokenSource();
         private List<byte> _bufBytes = new List<byte>();
 
+        private Pipeline<ReceivedWapMessage> _rxPipeline = new Pipeline<ReceivedWapMessage>();
         
         public event BrokenFrameDelegate OnBrokenFrame;
         public event ProviderStoppedDelegate OnStopped;
@@ -54,6 +56,7 @@ namespace SteuerSoft.Network.Protocol.Communication.Base
             // i.e. the cancellationToken is set.
 #pragma warning disable CS4014 // Da dieser Aufruf nicht abgewartet wird, wird die Ausführung der aktuellen Methode fortgesetzt, bevor der Aufruf abgeschlossen ist
             ReceiveSpinner(_stopToken.Token);
+            HandleSpinner(_stopToken.Token);
 #pragma warning restore CS4014 // Da dieser Aufruf nicht abgewartet wird, wird die Ausführung der aktuellen Methode fortgesetzt, bevor der Aufruf abgeschlossen ist
             return true;
         }
@@ -74,11 +77,10 @@ namespace SteuerSoft.Network.Protocol.Communication.Base
         {
             while (!ct.IsCancellationRequested)
             {
-                ReceivedWapMessage msg;
                 try
                 {
-                    msg = await ReceiveMessage(ct);
-                    await HandleMessage(msg);
+                    var msg = await ReceiveMessage(ct);
+                    await _rxPipeline.Add(msg, ct);
                 }
                 catch (TaskCanceledException)
                 {
@@ -100,6 +102,22 @@ namespace SteuerSoft.Network.Protocol.Communication.Base
 
             Running = false;
             _stream = null;
+        }
+
+        private async Task HandleSpinner(CancellationToken ct)
+        {
+            while (!ct.IsCancellationRequested)
+            {
+                try
+                {
+                    var msg = await _rxPipeline.Get(ct);
+                    await HandleMessage(msg);
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
         }
 
         private async Task<ReceivedWapMessage> ReceiveMessage(CancellationToken ct)

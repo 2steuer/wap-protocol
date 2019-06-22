@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SteuerSoft.Network.Protocol.Communication.Material;
 using SteuerSoft.Network.Protocol.Message;
+using SteuerSoft.Network.Protocol.Message.Base;
 using SteuerSoft.Network.Protocol.Message.Interfaces;
 using SteuerSoft.Network.Protocol.Message.ValueTypes;
 using SteuerSoft.Network.Protocol.Payloads.Control;
@@ -504,7 +505,7 @@ namespace SteuerSoft.Network.Protocol.Server
             _clients.Remove(clt);
         }
 
-        private async Task<IWapMessage> MethodCallHandler(ClientConnection client, ReceivedWapMessage message)
+        private async Task<WapMessage> MethodCallHandler(ClientConnection client, ReceivedWapMessage message)
         {
             if (_serverMethods.HasMethod(message.EndPoint))
             {

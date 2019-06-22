@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using SteuerSoft.Network.Protocol.Communication.Material;
 using SteuerSoft.Network.Protocol.ExtensionMethods;
 using SteuerSoft.Network.Protocol.Message;
+using SteuerSoft.Network.Protocol.Message.Base;
 using SteuerSoft.Network.Protocol.Message.Interfaces;
 using SteuerSoft.Network.Protocol.Message.ValueTypes;
 using SteuerSoft.Network.Protocol.Server.Material;
@@ -14,7 +15,7 @@ namespace SteuerSoft.Network.Protocol.Server.Util.MethodProxy
 {
     public class ServerMethodProxy
     {
-        private Dictionary<string, Func<ClientConnection, ReceivedWapMessage, Task<IWapMessage>>> _methods = new Dictionary<string, Func<ClientConnection, ReceivedWapMessage, Task<IWapMessage>>>();
+        private Dictionary<string, Func<ClientConnection, ReceivedWapMessage, Task<WapMessage>>> _methods = new Dictionary<string, Func<ClientConnection, ReceivedWapMessage, Task<WapMessage>>>();
         private Dictionary<string, MethodInfo> _infos = new Dictionary<string, MethodInfo>();
 
         internal Dictionary<string, MethodInfo> Methods => _infos;
@@ -46,7 +47,7 @@ namespace SteuerSoft.Network.Protocol.Server.Util.MethodProxy
                 ResultPayloadType = typeof(TResult).GetPayloadTypeName()
             };
 
-            var f = new Func<ClientConnection, ReceivedWapMessage, Task<IWapMessage>>(async (client, message) =>
+            var f = new Func<ClientConnection, ReceivedWapMessage, Task<WapMessage>>(async (client, message) =>
             {
                 WapMessage<TParam> msg = WapMessage<TParam>.FromReceivedMessage(message);
 
@@ -74,7 +75,7 @@ namespace SteuerSoft.Network.Protocol.Server.Util.MethodProxy
             _infos.Remove(endpoint);
         }
 
-        public async Task<IWapMessage> CallMethod(ClientConnection client, WapEndPoint ep, ReceivedWapMessage msg)
+        public async Task<WapMessage> CallMethod(ClientConnection client, WapEndPoint ep, ReceivedWapMessage msg)
         {
             if (!HasMethod(ep))
             {

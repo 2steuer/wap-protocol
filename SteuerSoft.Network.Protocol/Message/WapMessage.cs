@@ -10,11 +10,16 @@ using SteuerSoft.Network.Protocol.Message.ValueTypes;
 
 namespace SteuerSoft.Network.Protocol.Message
 {
-    public class WapMessage<T> : WapMessageBase
+    public class WapMessage<T> : WapMessage
     {
         public T Payload { get; protected set; }
 
         public WapMessage(MessageType type, string endPoint, T payload) : base(type, endPoint)
+        {
+            Payload = payload;
+        }
+
+        public WapMessage(MessageType type, string endPoint, T payload, ulong sequenceNumber) : base(type, endPoint, sequenceNumber)
         {
             Payload = payload;
         }

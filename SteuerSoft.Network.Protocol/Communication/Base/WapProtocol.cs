@@ -5,10 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SteuerSoft.Network.Protocol.Communication.Material;
 using SteuerSoft.Network.Protocol.Message;
 using SteuerSoft.Network.Protocol.Message.Base;
 using SteuerSoft.Network.Protocol.Message.Interfaces;
 using SteuerSoft.Network.Protocol.Message.ValueTypes;
+using SteuerSoft.Network.Protocol.Util;
 
 namespace SteuerSoft.Network.Protocol.Communication.Base
 {
@@ -16,9 +18,7 @@ namespace SteuerSoft.Network.Protocol.Communication.Base
     {
         private Stream _stream = null;
 
-        private SemaphoreSlim _methodSem = new SemaphoreSlim(1);
-        private IWapMessage _currentMethodCall = null;
-        private TaskCompletionSource<ReceivedWapMessage> _tcMethodCall = null;
+        private AsyncDictionary<ulong, MethodCall> _methodCalls = new AsyncDictionary<ulong, MethodCall>();
 
         protected WapProtocol(Stream stream)
         {
@@ -58,33 +58,39 @@ namespace SteuerSoft.Network.Protocol.Communication.Base
                     break;
 
                 case MessageType.MethodCall:
-                    await SendMesssage(await HandleMethodCall(message));
+                    var msg = await HandleMethodCall(message);
+                    msg.SetSequenceNumber(message.SequenceNumber);
+                    await SendMesssage(msg);
                     break;
 
                 case MessageType.MethodResponse:
-                    if (_currentMethodCall != null)
+                    var call = await _methodCalls.Get(message.SequenceNumber);
+
+                    if ((call != null) && (call.Messsage.EndPoint == message.EndPoint))
                     {
-                        if (_currentMethodCall.EndPoint == message.EndPoint)
-                        {
-                            _tcMethodCall.SetResult(message);
-                        }
+                        call.CompletionSource.SetResult(message);
                     }
                     break;
             }
         }
 
-        public async Task<ReceivedWapMessage> CallMethod(IWapMessage msg)
+        public async Task<ReceivedWapMessage> CallMethod(IWapMessage msg, CancellationToken ct = default(CancellationToken))
         {
-            await _methodSem.WaitAsync();
-            _currentMethodCall = msg;
-            _tcMethodCall = new TaskCompletionSource<ReceivedWapMessage>();
-            await SendMesssage(msg);
-            var ret = await _tcMethodCall.Task;
-            _currentMethodCall = null;
-            _tcMethodCall = null;
-            _methodSem.Release();
-
-            return ret;
+            MethodCall call = new MethodCall();
+            call.Messsage = msg;
+            var hdlr = ct.Register(call.CompletionSource.SetCanceled);
+            await _methodCalls.Add(msg.SequenceNumber, call, ct);
+            try
+            {
+                await SendMesssage(msg);
+                var ret = await call.CompletionSource.Task;
+                return ret;
+            }
+            finally
+            {
+                hdlr.Dispose();
+                await _methodCalls.Remove(msg.SequenceNumber); // cancellation ignored as we usually get here when the task is cancelled already but we still want to remove the call
+            }
         }
 
         public Task<bool> SendEventMessage(IWapMessage msg)
@@ -92,7 +98,7 @@ namespace SteuerSoft.Network.Protocol.Communication.Base
             return SendMesssage(msg);
         }
 
-        protected abstract Task<IWapMessage> HandleMethodCall(ReceivedWapMessage msg);
+        protected abstract Task<WapMessage> HandleMethodCall(ReceivedWapMessage msg);
 
         protected abstract Task HandleEventMessage(ReceivedWapMessage msg);
 
