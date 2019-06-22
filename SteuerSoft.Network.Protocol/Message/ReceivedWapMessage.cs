@@ -42,11 +42,11 @@ namespace SteuerSoft.Network.Protocol.Message
             try
             {
                 // Parse Endpoint
-                byte endPointLength = data[1];
-                EndPoint = Encoding.UTF8.GetString(data, 2, endPointLength);
+                byte endPointLength = data[9];
+                EndPoint = Encoding.UTF8.GetString(data, 10, endPointLength);
 
                 // get payload
-                ushort payloadLength = NumberConverter.ToUInt16(data, 2 + endPointLength);
+                ushort payloadLength = NumberConverter.ToUInt16(data, 10 + endPointLength);
                 Payload = data
                     .Skip(2) // type byte, endpoint length byte
                     .Skip(sizeof(ulong))    // Sequence number
