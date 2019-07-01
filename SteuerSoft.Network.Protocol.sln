@@ -3,6 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{AB51E2B4-1C4D-4D3C-BF1F-9EFBC59E67CE}"
+	ProjectSection(SolutionItems) = preProject
+		paket.dependencies = paket.dependencies
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MsgTests", "MsgTests\MsgTests.csproj", "{8F0DA407-50AE-4693-979B-41B895867198}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteuerSoft.Network.Protocol", "SteuerSoft.Network.Protocol\SteuerSoft.Network.Protocol.csproj", "{3704FB9F-81FC-42C5-A72B-5BBD51C1F1DC}"

@@ -1,0 +1,6 @@
+source K:\NuGetRepository
+source https://api.nuget.org/v3/index.json
+
+nuget Crc32.NET 1.2.0 prerelease restriction: >= net452
+nuget NDesk.Options 0.2.1 prerelease restriction: >= net452
+nuget Newtonsoft.Json 10.0.3 prerelease restriction: >= net452
