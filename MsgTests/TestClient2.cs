@@ -35,6 +35,7 @@ namespace MsgTests
             _pub = await CreatePublisher<String>(":stringsforfun");
             _t.Elapsed += _t_Elapsed;
             _t.AutoReset = true;
+            _t.Start();
         }
 
         private void _t_Elapsed(object sender, ElapsedEventArgs e)

@@ -16,7 +16,7 @@ namespace SteuerSoft.Network.Protocol.Server
         public static void Main(string[] args)
         {
             int port = 51234;
-            LogLevel logLevel = LogLevel.Info;
+            LogLevel logLevel = LogLevel.Verbose;
             WapEndPoint ep = WapEndPoint.Parse(":control");
             OptionSet options = new OptionSet()
             {
