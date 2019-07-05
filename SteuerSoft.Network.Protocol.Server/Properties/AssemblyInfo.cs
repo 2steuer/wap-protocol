@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("SteuerSoft.Network.Protocol.Server")]
 [assembly: AssemblyDescription("WapProtocol Server Classes")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Merlin Steuer")]
 [assembly: AssemblyProduct("SteuerSoft.Network.Protocol.Server")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]

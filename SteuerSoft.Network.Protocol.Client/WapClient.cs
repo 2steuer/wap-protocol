@@ -134,7 +134,7 @@ namespace SteuerSoft.Network.Protocol.Client
 
         protected abstract Task OnStart();
 
-        protected async Task<MethodCaller<TParam, TResult>> CreateMethodCaller<TParam, TResult>(string endPoint)
+        public async Task<MethodCaller<TParam, TResult>> CreateMethodCaller<TParam, TResult>(string endPoint)
         {
             WapEndPoint ep = WapEndPoint.Parse(Endpoint, endPoint);
             // Call raises an exception if the method does not exist or has a different signature
