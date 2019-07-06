@@ -15,7 +15,23 @@ namespace SteuerSoft.Network.Protocol.ExtensionMethods
                 t.GetCustomAttributes(typeof(WapPayloadAttribute), false).FirstOrDefault() as
                     WapPayloadAttribute;
 
-            return attr?.Name ?? string.Empty;
+            if (attr == null)
+            {
+                return string.Empty;
+            }
+
+            if (t.IsGenericType)
+            {
+                var args = t.GetGenericArguments();
+
+                var argStr = string.Join(",", args.Select(arg => arg.GetPayloadTypeName()));
+
+                return $"{attr.Name}<{argStr}>";
+            }
+            else
+            {
+                return attr.Name;
+            }
         }
     }
 }

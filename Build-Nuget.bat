@@ -1,1 +1,1 @@
-.paket\paket.exe pack ..\NuGetRepo
+.paket\paket.exe pack --build-config Debug ..\NuGetRepo
