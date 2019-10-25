@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Force.Crc32;
+using Newtonsoft.Json;
 using SteuerSoft.Network.Protocol.Message.Interfaces;
 using SteuerSoft.Network.Protocol.Message.ValueTypes;
 using SteuerSoft.Network.Protocol.Util;
@@ -10,9 +11,16 @@ namespace SteuerSoft.Network.Protocol.Message.Base
 {
     public abstract class WapMessage : IWapMessage
     {
+        protected static JsonSerializer Converter { get; } = new JsonSerializer();
+
         public MessageType Type { get; protected set; }
         public string EndPoint { get; protected set; }
         public ulong SequenceNumber { get; protected set; }
+
+        static WapMessage()
+        {
+            Converter.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
+        }
 
         protected WapMessage(MessageType type, string endPoint, ulong sequenceNumber)
             :this(sequenceNumber)

@@ -12,6 +12,13 @@ namespace SteuerSoft.Network.Protocol.Message
 {
     public class WapMessage<T> : WapMessage
     {
+        static readonly JsonSerializerSettings _settings = new JsonSerializerSettings()
+        {
+            ReferenceLoopHandling = ReferenceLoopHandling.Serialize,
+            PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+            Formatting = Formatting.None
+        };
+
         public T Payload { get; protected set; }
 
         public WapMessage(MessageType type, string endPoint, T payload) : base(type, endPoint)
@@ -26,12 +33,12 @@ namespace SteuerSoft.Network.Protocol.Message
 
         protected override byte[] GetPayload()
         {
-            return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(Payload));
+            return Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(Payload, _settings));
         }
 
         public static WapMessage<T> FromReceivedMessage(ReceivedWapMessage msg)
         {
-            return new WapMessage<T>(msg.Type, msg.EndPoint, JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(msg.Payload)));
+            return new WapMessage<T>(msg.Type, msg.EndPoint, JsonConvert.DeserializeObject<T>(Encoding.UTF8.GetString(msg.Payload), _settings));
         }
     }
 }
